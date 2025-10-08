@@ -1,0 +1,54 @@
+# Root .gitignore for rails-react-devise
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+dist/
+build/
+
+# Rails
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/vendor/bundle
+/public/packs
+/public/packs-test
+/public/assets
+/storage/*
+/config/master.key
+
+# Byebug
+.byebug_history
+
+# Docker
+docker-compose.override.yml
+**/docker-compose.override.yml
+**/docker-compose.*.yml
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Mac
+*.swp
+
+# Ignore backend env file explicitly
+/backend/.env
+
+# Ignore frontend local envs
+/frontend/.env
+
+# Ignore log and temp files
+**/log/*
+**/tmp/*
