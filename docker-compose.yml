@@ -25,9 +25,11 @@ services:
     volumes:
       - ./backend:/app:cached
     ports:
-      - "3001:3000"
+      - "${RAILS_PORT:-3001}:3000"
     env_file:
       - .env
+    environment:
+      - RAILS_PORT=${RAILS_PORT:-3001}
     depends_on:
       db:
         condition: service_healthy

@@ -11,12 +11,12 @@ RUN apt-get update -qq \
 RUN gem install bundler -v "2.4.15" || true
 
 # Copy Gemfile first to leverage Docker layer caching
-COPY backend/Gemfile backend/Gemfile.lock ./
+COPY Gemfile Gemfile.lock ./
 RUN bundle config set --local deployment 'false' \
     && bundle install --jobs=4 --retry=3
 
 # Copy application code
-COPY backend/ .
+COPY . .
 
 ENV RAILS_ENV=development
 
@@ -24,4 +24,5 @@ ENV RAILS_ENV=development
 EXPOSE 3000
 
 # Default command runs the Rails dev server; when using docker-compose we map host:container ports
-CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+ENV RAILS_PORT=3000
+CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "${RAILS_PORT}"]

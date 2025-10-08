@@ -28,11 +28,8 @@ Legend
 - [x] Create and migrate DB: `cd backend && bin/rails db:create db:migrate`
 - [x] Seed development data: `cd backend && bin/rails db:seed`
 - [x] Start backend server (host): `cd backend && bin/rails s -p 3001`
-- [ ] Add `dotenv-rails` gem to load `.env` automatically in development and test
-- [ ] Add backend to docker-compose as `backend` service
- - [x] Add `dotenv-rails` gem to load `.env` automatically in development and test
- - [x] Add backend to docker-compose as `backend` service
-
+- [x] Add `dotenv-rails` gem to load `.env` automatically in development and test
+- [x] Add backend to docker-compose as `backend` service
 
 ## 3. Backend — testing & linting
 
