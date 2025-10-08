@@ -1,8 +1,65 @@
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+plugins:
+  - rubocop-rspec
+  - rubocop-performance
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+  Exclude:
+    - 'bin/**/*'
+    - 'node_modules/**/*'
+    - 'db/schema.rb'
+    - 'db/*_schema.rb'
+    - 'db/structure.sql'
+    - 'vendor/**/*'
+
+# Enforce strict style and safety
+Layout/LineLength:
+  Max: 100
+
+Metrics/MethodLength:
+  Max: 10
+
+Metrics/BlockLength:
+  Max: 20
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/AbcSize:
+  Max: 15
+
+Metrics/CyclomaticComplexity:
+  Max: 6
+
+Metrics/PerceivedComplexity:
+  Max: 7
+
+Lint/Debugger:
+  Enabled: true
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+# Disable top-level documentation requirement for classes/modules
+Lint/EmptyClass:
+  Enabled: true
+
+# Some projects prefer not to require a top-level documentation comment for
+# every class/module. Disable the style cop that enforces that.
+Style/CommentAnnotation:
+  Enabled: false
+
+Layout/IndentationWidth:
+  Width: 2
+
+# RSpec settings (from rubocop-rspec)
+RSpec:
+  Enabled: true
+

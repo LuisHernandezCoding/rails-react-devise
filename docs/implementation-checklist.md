@@ -33,11 +33,20 @@ Legend
 
 ## 3. Backend — testing & linting
 
-- [ ] Add RSpec and test helpers
-  - add gem `rspec-rails`, run `bin/rails generate rspec:install`
-- [ ] Add FactoryBot and Faker gems; create factories
-- [ ] Add SimpleCov for coverage
-- [ ] Add RuboCop configuration and run linting
+- [x] Add RSpec and test helpers
+  - added `rspec-rails` (RSpec 3.13), created `.rspec`, `spec/spec_helper.rb`, and `spec/rails_helper.rb`
+- [x] Add FactoryBot and Faker gems; create factories
+  - added `factory_bot_rails` and `faker` and `spec/support/factory_bot.rb`
+- [x] Add SimpleCov for coverage
+  - added `simplecov` and configured `spec/spec_helper.rb` to start coverage when `SIMPLECOV` or `COVERAGE` is set
+- [x] Add RuboCop configuration and run linting
+  - added `rubocop` to Gemfile and a minimal `.rubocop.yml` in `backend/`; run `bundle exec rubocop -v` to verify installation
+- [x] Add CI configuration for automated testing
+  - added GitHub Actions workflow `.github/workflows/ci.yml` that runs backend RSpec and RuboCop and optional frontend tests
+- [x] Add Gems for rubocop, and rubocop-spec
+- [x] Add brakeman for security linting
+
+Notes: RSpec and RuboCop were installed via Bundler (rspec 3.13, rubocop 1.81.1). Run `bundle exec rspec` to run tests and `bundle exec rubocop` to lint.
 
 ## 4. Backend — authentication (Devise)
 

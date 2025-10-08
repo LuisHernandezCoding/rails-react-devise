@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: rails_devise_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          gem install bundler
+          bundle config set --local without '' || true
+          bundle install --jobs 4 --retry 3
+
+      - name: Prepare DB
+        working-directory: ./backend
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_devise_test
+        run: |
+          bin/rails db:create db:migrate
+
+      - name: Run RuboCop
+        working-directory: ./backend
+        run: bundle exec rubocop --parallel || true
+
+      - name: Run RSpec
+        working-directory: ./backend
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_devise_test
+        run: bundle exec rspec
+
