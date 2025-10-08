@@ -11,11 +11,14 @@ AllCops:
     - 'db/schema.rb'
     - 'db/*_schema.rb'
     - 'db/structure.sql'
+    - 'db/migrate/**/*'
     - 'vendor/**/*'
 
 # Enforce strict style and safety
 Layout/LineLength:
   Max: 100
+  Exclude:
+    - 'db/migrate/**/*'
 
 Metrics/MethodLength:
   Max: 10

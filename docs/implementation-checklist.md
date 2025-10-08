@@ -50,11 +50,11 @@ Notes: RSpec and RuboCop were installed via Bundler (rspec 3.13, rubocop 1.81.1)
 
 ## 4. Backend — authentication (Devise)
 
-- [ ] Decide token vs cookie strategy (recommend: JWT for SPA)
-- [ ] Add Devise and devise-jwt (or devise_token_auth) gems
-- [ ] Run `bin/rails generate devise:install` and `bin/rails generate devise User`
-- [ ] Add API controllers for registration and sessions under `app/controllers/api/v1`
-- [ ] Add `GET /api/v1/me` endpoint
+- [x] Decide token vs cookie strategy (recommend: JWT for SPA)
+- [x] Add Devise and devise-jwt (or devise_token_auth) gems
+- [x] Run `bin/rails generate devise:install` and `bin/rails generate devise User`
+- [x] Add API controllers for registration and sessions under `app/controllers/api/v1`
+- [x] Add `GET /api/v1/me` endpoint
 - [ ] Add tests for registration/login
 
 ## 5. Backend — background jobs & mail
