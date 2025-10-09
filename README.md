@@ -1,138 +1,96 @@
-# rails-react-devise
+## rails-react-devise — Rails + React starter with Devise auth
 
-A starter template that combines the latest Rails API backend with a modern React frontend and Devise-based authentication (register + login). This repo is a minimal, opinionated bootstrap for building full-stack Rails + React applications with authentication, ready for expansion and deployment.
+This repository is a bootstarter template that combines an API-only Rails backend with a modern React frontend and Devise-based authentication. It's intended to give you a working starting point with sensible defaults (Devise, Sidekiq, RSpec, Vite + React, Docker support) and a clear path to production.
 
-## Highlights
-
-- Rails (latest) as API backend
-- React (latest) as frontend (Vite or Create React App can be used; this template assumes a modern toolchain)
-- Devise for user authentication (registration, login)
-- Basic onboarding and guidance to expand features: protected routes, API tokens, social auth, testing, and deployment
+This README consolidates the implementation checklist and next-steps guidance found in `docs/` so you have one authoritative entrypoint for onboarding, local development, testing, CI, and deployment.
 
 ## Table of contents
 
-- Project structure
-- Prerequisites
-- Quick start
-- Development workflow
-- Authentication (Devise) overview
-- Onboarding guide: first 30 minutes
-- Expanding the template (features to add)
-- Tests and quality gates
-- Deployment
-- Troubleshooting
-- Contributing
+- Project overview
+- Quick links
+- Requirements & recommended tools
+- Fast local quickstart (hosted Rails)
+- Dockerized quickstart
+- Authentication strategies (Devise)
+- Project layout
+- Testing and quality gates
+- CI / GitHub Actions
+- Deployment guidance
+- Security & production readiness
+- Useful commands & troubleshooting
+- Where to find more details (docs/)
 
-## Project structure
+---
 
-This repository is intentionally minimal. Typical layout for a Rails API + React app looks like:
+## Project overview
 
-- /backend or / (Rails app)
-	- app/
-	- config/
-	- db/
-	- Gemfile
-- /frontend or / (React app)
-	- package.json
-	- src/
-	- vite.config.js or craco/webpack config
-- README.md
+- Backend: Rails API (in `backend/`) with Devise for authentication. Sidekiq + Redis configured for background jobs. RSpec for tests.
+- Frontend: React (Vite + TypeScript) in `frontend/` with a simple auth context and API service patterns.
+- Docker: `docker-compose.yml` provides services for Postgres (and optional Redis/Sidekiq) to make local dev reproducible.
 
-Note: This template doesn't lock you into a specific monorepo layout. Choose either a monorepo (both apps in one repo) or two repos (recommended if teams separate frontend/backend).
+This repo is opinionated but flexible: pick token (JWT) or cookie-based authentication depending on your deployment topology.
 
-## Prerequisites
+## Quick links
 
-- macOS / Linux / Windows WSL
-- Ruby (3.2+ recommended) and Bundler
-- Node.js (18+ recommended) and npm/yarn/pnpm
-- PostgreSQL (recommended), or SQLite for local/dev
+- Implementation checklist: `docs/implementation-checklist.md`
+- Detailed next steps: `docs/next-steps.md`
+- Docs folder: `docs/`
+
+## Requirements & recommended tools
+
 - Git
+- Ruby 3.2+ (use rbenv/asdf/rvm to manage versions)
+- Bundler
+- Node.js 18+ and pnpm (or npm/yarn)
+- Docker & Docker Compose (recommended)
+- PostgreSQL (containerized via Docker Compose or local install)
 
-Install system tools (example macOS using Homebrew):
+macOS example (Homebrew):
 
 ```bash
-# Ruby + tools
+# Install dev tools (example)
 brew install rbenv ruby-build postgresql node pnpm
 
-# Start Postgres
+# Start Postgres if using host install
 brew services start postgresql
 ```
 
-## Quick start
+---
 
-This quickstart assumes a monorepo with `backend/` (Rails API) and `frontend/` (React). Adjust paths if you keep a single-app layout.
+## Fast local quickstart (host Rails, Docker Postgres)
 
-1) Install backend gems and create the database
+This is the fastest way to get the app running for development while keeping Rails on the host (useful for quick iteration with your editor/IDE).
+
+1) Copy env example and set secrets
+
+```bash
+cp .env.example .env
+# edit .env as needed (ports, keys)
+```
+
+2) Start Postgres with Docker Compose
+
+```bash
+docker compose up -d db
+docker compose ps
+docker compose logs db --tail=50
+```
+
+3) Backend setup (host Ruby)
 
 ```bash
 cd backend
 bundle install
-rails db:create db:migrate
+./bin/rails db:create db:migrate db:seed
 ```
 
-2) Install frontend packages
+4) Start backend server
 
 ```bash
-cd ../frontend
-pnpm install   # or npm install / yarn install
+./bin/rails server -p 3001
 ```
 
-3) Run both servers in development (two terminals)
-
-Terminal 1 (Rails API):
-
-```bash
-cd backend
-rails server -p 3001
-```
-
-Terminal 2 (React frontend):
-
-```bash
-cd frontend
-pnpm dev   # or npm run start
-```
-
-Open your browser at http://localhost:5173 (or port your frontend dev server uses) and the React app will proxy API requests to the Rails backend.
-
-## Development workflow
-
-- Backend: Use Rails API mode (controllers under app/controllers/api). Add serializers (ActiveModelSerializers, FastJsonapi, or Blueprinter) for JSON responses.
-- Frontend: Use React with functional components and hooks. Keep auth state in context or a global store (React Context, Redux, Zustand).
-- CORS & CSRF: For API-only Rails apps, configure CORS (rack-cors) and consider token-based auth for SPAs. Devise supports session-based auth but for SPAs token or JWT flows are common.
-
-## Authentication (Devise) overview
-
-This template wires up Devise for user registration and login. Typical approaches for SPAs:
-
-1) Session-based (cookies): Keep Devise sessions and protect API endpoints using standard Devise helpers. Ensure frontend uses same-site cookies and CSRF tokens.
-2) Token-based (recommended for APIs): Use Devise + devise_token_auth or devise-jwt to issue access tokens. The frontend stores tokens (in memory or secure storage) and attaches Authorization header to API requests.
-
-By default, this template includes a basic Devise setup for register/login endpoints. To switch to token/JWT flows, install `devise-jwt` or `devise_token_auth` and follow their docs.
-
-## Onboarding guide — first 30 minutes
-
-Follow these steps when you clone this template to get a running app fast.
-
-1) Clone the repo
-
-```bash
-git clone <repo-url> my-app
-cd my-app
-```
-
-2) Backend setup
-
-```bash
-cd backend
-bundle install
-rails db:create db:migrate
-rails db:seed   # if seed file exists
-```
-
-If you get errors about Ruby version, use rbenv / rvm / asdf to install the specified Ruby.
-
-3) Frontend setup
+5) Frontend setup & start
 
 ```bash
 cd ../frontend
@@ -140,151 +98,187 @@ pnpm install
 pnpm dev
 ```
 
-4) Create a test user (via Rails console or UI)
+Open the frontend (default Vite port is 5173) and exercise the auth flows.
 
-Rails console:
-
-```bash
-cd backend
-rails console
-User.create!(email: 'test@example.com', password: 'password', password_confirmation: 'password')
-```
-
-5) Test the auth flow
-
-- Use the React UI to register/login or use curl/postman to hit the API endpoints.
-
-## Expanding the template — recommendations and features to add
-
-Here are common next steps when turning this starter into a production-ready app:
-
-- Use `devise-jwt` or `devise_token_auth` for token-based authentication for SPAs
-- Add email confirmation and account recovery (Devise modules)
-- Add user roles and authorization with Pundit or CanCanCan
-- Add RSpec + FactoryBot + DatabaseCleaner for Rails tests
-- Add Jest + React Testing Library for frontend tests
-- Add TypeScript to the frontend for stronger types
-- Add Dockerfiles and docker-compose for consistent dev environments
-- Add CI (GitHub Actions) for test and lint pipelines
-- Integrate a hosted DB and email provider (SendGrid/Postmark) for production
-
-## Tests and quality gates
-
-- Backend: RSpec recommended. Add a simple smoke test to ensure user registration works.
-- Frontend: Add one integration test for login flow using React Testing Library.
-
-Example backend test (RSpec):
-
-```ruby
-# spec/requests/auth_spec.rb
-require 'rails_helper'
-
-RSpec.describe 'Auth', type: :request do
-	it 'registers a user' do
-		post '/users', params: { user: { email: 'a@b.com', password: 'password', password_confirmation: 'password' } }
-		expect(response).to have_http_status(:created)
-	end
-end
-```
-
-## Deployment
-
-Common deployment targets:
-
-- Heroku (easy for Rails + Postgres)
-- Fly.io
-- Render
-- DigitalOcean App Platform
-
-Tips:
-
-- Precompile assets for the Rails app (if serving frontend as part of Rails): `rails assets:precompile`
-- Configure environment variables: SECRET_KEY_BASE, DATABASE_URL, RAILS_ENV=production
-- For separate frontend hosting, deploy the frontend as a static app (Vercel, Netlify, or static S3) and point API calls to your backend host.
-
-## Troubleshooting
-
-- Devise login fails: check cookie settings, CORS config, and allow credentials on CORS.
-- Database errors: ensure Postgres is running and DATABASE_URL is set.
-- Frontend 404s: verify your dev server port and proxy configuration.
-
-## Contributing
-
-Contributions are welcome. If you add core changes (different auth approach, new CI, Docker setup), try to keep the template flexible and document any non-obvious steps in this README.
-
-## License
-
-MIT
+Notes
+- If Rails runs on host and frontend is in Docker, use `VITE_API_BASE=http://host.docker.internal:3001` for macOS Docker Desktop.
 
 ---
 
-If you'd like, I can also:
+## Dockerized quickstart (full stack in Compose)
 
-- Add example `docker-compose.yml` for local development
-- Add a minimal Rails `api-only` skeleton and a simple React Vite app wired to it
-- Implement Devise + devise-jwt example flow and tests
+This runs everything in containers and is recommended when you want parity with production.
 
-Tell me which next step you'd like and I'll implement it.
-
-## Frontend (Docker)
-
-If you prefer running the frontend using Docker Compose, the project exposes a few environment variables to control its behavior:
-
-- `FRONTEND_PORT` — the host port mapped to the frontend dev server (defaults to `5173`).
-- `VITE_API_BASE` — the base URL the frontend will use to call your backend API. Example values:
-	- `http://host.docker.internal:3001` (macOS Docker Desktop, reaches a backend bound to host port 3001)
-	- `http://backend:3000` (container-to-container networking; use this when the backend runs as a compose service)
-
-Example `.env` (project root):
-
-```
-# Expose frontend on host port 5173
-FRONTEND_PORT=5173
-
-# Point the frontend to the backend API. Choose host.docker.internal (macOS) or container networking.
-VITE_API_BASE=http://host.docker.internal:3001
-```
-
-Start everything with:
+1) Build and start services
 
 ```bash
 docker compose up --build
 ```
 
-Notes:
-- The frontend container receives `PORT` and `HOST` env vars so the Vite dev server listens on `0.0.0.0` and the configured port.
-- If you change `FRONTEND_PORT`, use that same value to open the frontend in your browser (e.g. `http://localhost:3000`).
-- For a production-ready frontend image, consider adding a multi-stage Dockerfile that runs `pnpm build` and serves the static output with nginx (I can add this if you want).
+2) Run Rails migrations inside the web container
 
+```bash
+docker compose run --rm web bin/rails db:create db:migrate db:seed
+```
 
-## Security & production readiness
+3) Access services
 
-This project includes a few small utilities and configuration options to help prepare for production and secure authentication flows. They're documented here so you can tune them for your environment.
+- Backend: http://localhost:3001 (mapped host port)
+- Frontend: http://localhost:5173 (or configured FRONTEND_PORT)
 
-- Session & cookie settings
-	- The backend sets secure session cookie defaults via `backend/config/initializers/session_store.rb`.
-	- Environment variables:
-		- `SESSION_COOKIE_SECURE` (true/false) — if `true`, cookies are marked Secure. Defaults to `true` in production and `false` in development.
-		- `SESSION_COOKIE_SAME_SITE` (`none`/`lax`/`strict`) — controls the SameSite attribute. Default is `none` in production (to support cross-origin SPA setups) and `lax` in development. When using cross-origin cookies, ensure your frontend uses `credentials: 'include'` and you serve over HTTPS.
-		- `SESSION_COOKIE_KEY` — the cookie key (default: `_backend_session`).
+See `docs/docker.md` for more details on configuring services and ports.
 
-- Error reporting (Sentry)
-	- Gems: `sentry-ruby`, `sentry-rails` were added.
-	- Configure with the `SENTRY_DSN` env var. When `SENTRY_DSN` is present the Sentry client is initialized automatically. You can also set `SENTRY_TRACES_SAMPLE_RATE` for transaction sampling.
+---
 
-- Dependency scanning
-	- `bundler-audit` is added in development for scanning Ruby gems. Run:
+## Authentication strategies (Devise)
+
+Two patterns are supported and documented. Choose based on your SPA setup and security needs.
+
+1) Cookie-based (session)
+- Pros: Leverages Devise session management and Rails CSRF protections.
+- Cons: More complex cross-origin setup; requires correct SameSite, Secure flags, and CORS with credentials.
+- Frontend: Use fetch/axios with credentials: 'include'. Configure `rack-cors` accordingly.
+
+2) Token-based (recommended for SPAs)
+- Pros: Simpler cross-origin behavior. Use `devise-jwt` or `devise_token_auth` to issue tokens on login.
+- Cons: Requires safe token storage (in memory is safest; localStorage has XSS risk). Consider refresh tokens.
+
+Devise + devise-jwt setup notes
+
+- Add gems: `devise`, `devise-jwt` and configure `config/initializers/devise.rb` with a JWT secret coming from env or credentials.
+- Create API controllers under `app/controllers/api/v1/` for registration and sessions that return JSON with token.
+- Protect endpoints with `before_action :authenticate_user!`.
+
+Cookie config hints
+
+- `backend/config/initializers/session_store.rb` exposes `SESSION_COOKIE_SECURE`, `SESSION_COOKIE_SAME_SITE`, and `SESSION_COOKIE_KEY` envs to tune settings.
+- For cross-origin cookies, `SameSite=None` and `Secure=true` are typically required (HTTPS).
+
+See `docs/authentication.md` for full examples and code snippets.
+
+---
+
+## Project layout
+
+- backend/ — Rails API app
+  - app/
+  - config/
+  - db/
+  - Gemfile
+- frontend/ — Vite + React app
+  - src/
+  - package.json
+  - vite.config.ts
+- docs/ — extended documentation and checklists (implementation-checklist.md, next-steps.md, etc.)
+
+---
+
+## Tests and quality gates
+
+Backend
+- RSpec is configured. Run tests:
 
 ```bash
 cd backend
-bundle exec bundler-audit check --update
+bundle exec rspec
 ```
 
-- Backups (simple developer task)
-	- A convenience rake task is available: `bin/rails db:backup` (implemented in `backend/lib/tasks/backup.rake`). It uses `pg_dump` to create a timestamped dump in `tmp/backups/` and supports `DATABASE_URL` or `DB_HOST`/`DB_NAME`/`DB_USERNAME`/`DB_PASSWORD` env vars.
-	- This is intentionally minimal. For production, use managed snapshots or a scheduled backup job and store backups off-host.
+- SimpleCov is available for coverage when `SIMPLECOV` or `COVERAGE` is set in the environment.
+- Use `factory_bot_rails` and `faker` for factories.
 
-Security notes
-- Never commit secrets (API keys, DB passwords) to the repo. Use Rails encrypted credentials or an external secret manager (Vault, cloud provider secrets, or GitHub Secrets for CI).
-- Prefer HTTPS in production. The app sets `config.force_ssl = true` in `backend/config/environments/production.rb` which enforces HTTPS and secure cookies.
+Frontend
+- Jest + React Testing Library are included. Run:
 
+```bash
+cd frontend
+pnpm test
+```
+
+Linters & security
+- RuboCop for Ruby linting: `bundle exec rubocop`
+- ESLint for frontend
+- Brakeman and bundler-audit for dependency & security scans
+
+CI
+- A GitHub Actions workflow exists at `.github/workflows/ci.yml` that runs backend tests, RuboCop, and optional frontend tests. See `docs/ci.md` for details and how to tweak caching for bundler/pnpm.
+
+---
+
+## Deployment guidance
+
+- You can deploy backend and frontend separately or serve static frontend assets from Rails `public/`.
+- For serving frontend from Rails, use the provided rake task `assets:build_frontend` (see `backend/lib/tasks/assets.rake`) to build the frontend and copy files into `backend/public` before precompiling assets.
+- Example providers: Heroku, Fly.io, Render, Vercel (frontend only).
+
+Precompile assets (if serving frontend from Rails):
+
+```bash
+cd backend
+bin/rails assets:precompile
+```
+
+See `docs/deployment.md` and `docs/deployment-implementation.md` for provider-specific tips and CI deployment examples.
+
+---
+
+## Security & production readiness
+
+- Enforce HTTPS in production: `config.force_ssl = true` is set in production config.
+- Use Rails encrypted credentials or a secrets manager for production secrets (do not commit keys).
+- Configure Sentry via `SENTRY_DSN` and `SENTRY_TRACES_SAMPLE_RATE` if you want error/perf tracking.
+- Run `bundle exec bundler-audit check --update` and `bundle exec brakeman` to scan for vulnerabilities.
+- The repo includes a convenience task `bin/rails db:backup` for developer-level backups (see `backend/lib/tasks/backup.rake`); for production use managed backups.
+
+Cookie and session envs
+
+- `SESSION_COOKIE_SECURE` (true/false)
+- `SESSION_COOKIE_SAME_SITE` (`none`/`lax`/`strict`)
+- `SESSION_COOKIE_KEY` (cookie name)
+
+---
+
+## Useful commands & troubleshooting
+
+Start Postgres via Docker Compose
+
+```bash
+docker compose up -d db
+```
+
+Run migrations (host Ruby)
+
+```bash
+cd backend
+./bin/rails db:create db:migrate
+```
+
+Run migrations (container)
+
+```bash
+docker compose run --rm web bin/rails db:create db:migrate
+```
+
+Run tests
+
+```bash
+# backend
+cd backend && bundle exec rspec
+
+# frontend
+cd frontend && pnpm test
+```
+
+Basic troubleshooting
+- Devise login fails: check cookie SameSite/Secure and CORS (see `backend/config/initializers/cors.rb`).
+- DB errors: ensure Postgres is running and `DATABASE_URL` or DB envs are correct.
+
+---
+
+## Where to find more details
+
+The `docs/` folder contains expanded guidance and step-by-step checklists. Start here:
+
+- `docs/implementation-checklist.md` — practical checklist to mark progress while implementing features
+- `docs/next-steps.md` — a comprehensive, end-to-end plan with examples and commands
+- `docs/authentication.md` — Devise-specific patterns and code examples
+- `docs/docker.md` — Docker Compose and container notes

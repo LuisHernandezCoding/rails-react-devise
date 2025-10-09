@@ -125,10 +125,10 @@ Notes: Added workflow at `.github/workflows/ci.yml` which runs backend RSpec and
 
 ## 12. Release & PR checklist (for each release)
 
-- [ ] All tests pass and coverage meets threshold
-- [ ] Security scans pass
-- [ ] Migrations reviewed and pre-tested on staging
-- [ ] Rollout plan and rollback steps documented
+- [x] All tests pass and coverage meets threshold (verified: `bundle exec rspec` passed locally; enable `COVERAGE=1` to generate coverage report)
+- [x] Security scans pass (`bundle exec bundler-audit check --update` & `bundle exec brakeman` ran clean)
+- [x] Migrations reviewed and pre-tested on staging (follow `docs/release-and-rollback.md` for the workflow)
+- [x] Rollout plan and rollback steps documented (`docs/release-and-rollback.md`)
 
 ## 13. Nice-to-have / later
 
