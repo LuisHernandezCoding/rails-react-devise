@@ -78,9 +78,9 @@ Notes: RSpec and RuboCop were installed via Bundler (rspec 3.13, rubocop 1.81.1)
 
 ## 7. Frontend — testing & tooling
 
-- [ ] Add Jest + React Testing Library
-- [ ] Add MSW to mock API calls in tests
-- [ ] Add ESLint + Prettier config and run autofix
+- [x] Add Jest + React Testing Library
+- [x] Add MSW to mock API calls in tests
+- [x] Add ESLint + Prettier config and run autofix
 
 ## 8. CI / GitHub Actions
 
