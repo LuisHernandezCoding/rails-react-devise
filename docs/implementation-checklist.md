@@ -92,10 +92,10 @@ Notes: Added workflow at `.github/workflows/ci.yml` which runs backend RSpec and
 
 ## 9. Dockerize full stack (optional but recommended)
 
-- [ ] Add `backend/Dockerfile` and `web` service to `docker-compose.yml`
-- [ ] Add `frontend` service (optional) to serve dev env
-- [ ] Ensure volumes are configured for code sync
-- [ ] Make `docker compose up` bring up db, web, and frontend for local dev
+- [x] Add `backend/Dockerfile` and `web` service to `docker-compose.yml`
+- [x] Add `frontend` service (optional) to serve dev env
+- [x] Ensure volumes are configured for code sync
+- [x] Make `docker compose up` bring up db, web, and frontend for local dev
 
 ## 10. Security & production readiness
 

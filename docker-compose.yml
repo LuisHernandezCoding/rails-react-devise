@@ -32,20 +32,21 @@ services:
       db:
         condition: service_healthy
   frontend:
-    build: ./frontend/frontend
+    build: ./frontend
     command: pnpm dev -- --host
     volumes:
-      - ./frontend/frontend:/app:cached
+      - ./frontend:/app:cached
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
     environment:
       # Set container PORT based on FRONTEND_PORT so the Vite server uses the same port
       - PORT=${FRONTEND_PORT:-5173}
       - HOST=0.0.0.0
-      # On macOS/docker desktop, use host.docker.internal to reach services on the host
-      - VITE_API_BASE=${VITE_API_BASE:-http://host.docker.internal:${RAILS_PORT:-3001}}
+      # Use internal Docker network name for the backend so the frontend can call the API from the container
+      - VITE_API_BASE=${VITE_API_BASE:-http://backend:3000}
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
   redis:
     image: redis:7
     ports:
