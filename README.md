@@ -225,3 +225,34 @@ If you'd like, I can also:
 - Implement Devise + devise-jwt example flow and tests
 
 Tell me which next step you'd like and I'll implement it.
+
+## Frontend (Docker)
+
+If you prefer running the frontend using Docker Compose, the project exposes a few environment variables to control its behavior:
+
+- `FRONTEND_PORT` — the host port mapped to the frontend dev server (defaults to `5173`).
+- `VITE_API_BASE` — the base URL the frontend will use to call your backend API. Example values:
+	- `http://host.docker.internal:3001` (macOS Docker Desktop, reaches a backend bound to host port 3001)
+	- `http://backend:3000` (container-to-container networking; use this when the backend runs as a compose service)
+
+Example `.env` (project root):
+
+```
+# Expose frontend on host port 5173
+FRONTEND_PORT=5173
+
+# Point the frontend to the backend API. Choose host.docker.internal (macOS) or container networking.
+VITE_API_BASE=http://host.docker.internal:3001
+```
+
+Start everything with:
+
+```bash
+docker compose up --build
+```
+
+Notes:
+- The frontend container receives `PORT` and `HOST` env vars so the Vite dev server listens on `0.0.0.0` and the configured port.
+- If you change `FRONTEND_PORT`, use that same value to open the frontend in your browser (e.g. `http://localhost:3000`).
+- For a production-ready frontend image, consider adding a multi-stage Dockerfile that runs `pnpm build` and serves the static output with nginx (I can add this if you want).
+

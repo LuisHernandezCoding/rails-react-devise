@@ -71,9 +71,10 @@ Notes: RSpec and RuboCop were installed via Bundler (rspec 3.13, rubocop 1.81.1)
 
 - [x] Setup frontend project (Vite + TS recommended): `pnpm create vite@latest frontend --template react-ts`
 - [x] Install deps: `pnpm install`
-- [ ] Add `src/contexts/AuthContext.tsx` and `src/services/api.ts`
-- [ ] Add login/register pages and a protected `/dashboard` route
+- [x] Add `src/contexts/AuthContext.tsx` and `src/services/api.ts`
+- [x] Add login/register pages and a protected `/dashboard` route
 - [x] Start frontend: `cd frontend && pnpm dev`
+- [x] Dockerize frontend project
 
 ## 7. Frontend — testing & tooling
 
