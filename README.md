@@ -256,3 +256,35 @@ Notes:
 - If you change `FRONTEND_PORT`, use that same value to open the frontend in your browser (e.g. `http://localhost:3000`).
 - For a production-ready frontend image, consider adding a multi-stage Dockerfile that runs `pnpm build` and serves the static output with nginx (I can add this if you want).
 
+
+## Security & production readiness
+
+This project includes a few small utilities and configuration options to help prepare for production and secure authentication flows. They're documented here so you can tune them for your environment.
+
+- Session & cookie settings
+	- The backend sets secure session cookie defaults via `backend/config/initializers/session_store.rb`.
+	- Environment variables:
+		- `SESSION_COOKIE_SECURE` (true/false) — if `true`, cookies are marked Secure. Defaults to `true` in production and `false` in development.
+		- `SESSION_COOKIE_SAME_SITE` (`none`/`lax`/`strict`) — controls the SameSite attribute. Default is `none` in production (to support cross-origin SPA setups) and `lax` in development. When using cross-origin cookies, ensure your frontend uses `credentials: 'include'` and you serve over HTTPS.
+		- `SESSION_COOKIE_KEY` — the cookie key (default: `_backend_session`).
+
+- Error reporting (Sentry)
+	- Gems: `sentry-ruby`, `sentry-rails` were added.
+	- Configure with the `SENTRY_DSN` env var. When `SENTRY_DSN` is present the Sentry client is initialized automatically. You can also set `SENTRY_TRACES_SAMPLE_RATE` for transaction sampling.
+
+- Dependency scanning
+	- `bundler-audit` is added in development for scanning Ruby gems. Run:
+
+```bash
+cd backend
+bundle exec bundler-audit check --update
+```
+
+- Backups (simple developer task)
+	- A convenience rake task is available: `bin/rails db:backup` (implemented in `backend/lib/tasks/backup.rake`). It uses `pg_dump` to create a timestamped dump in `tmp/backups/` and supports `DATABASE_URL` or `DB_HOST`/`DB_NAME`/`DB_USERNAME`/`DB_PASSWORD` env vars.
+	- This is intentionally minimal. For production, use managed snapshots or a scheduled backup job and store backups off-host.
+
+Security notes
+- Never commit secrets (API keys, DB passwords) to the repo. Use Rails encrypted credentials or an external secret manager (Vault, cloud provider secrets, or GitHub Secrets for CI).
+- Prefer HTTPS in production. The app sets `config.force_ssl = true` in `backend/config/environments/production.rb` which enforces HTTPS and secure cookies.
+

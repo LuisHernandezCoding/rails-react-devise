@@ -99,10 +99,18 @@ Notes: Added workflow at `.github/workflows/ci.yml` which runs backend RSpec and
 
 ## 10. Security & production readiness
 
-- [ ] Configure HTTPS and secure cookies
-- [ ] Add Sentry or Rollbar for error reporting
-- [ ] Configure database backups and secrets management
-- [ ] Run dependency vulnerability scanning
+- [x] Configure HTTPS and secure cookies
+  - Added `backend/config/initializers/session_store.rb` to enforce `Secure`, `HttpOnly`, and `SameSite` cookie attributes configurable via env vars (`SESSION_COOKIE_SECURE`, `SESSION_COOKIE_SAME_SITE`, `SESSION_COOKIE_KEY`). Default is `SameSite=None` in production to support cross-origin SPA setups and `lax` in development.
+
+- [x] Add Sentry or Rollbar for error reporting
+  - Added `sentry-ruby` and `sentry-rails` gems and a safe initializer at `backend/config/initializers/sentry.rb`. Sentry is enabled when `SENTRY_DSN` is set; otherwise it's a no-op.
+
+- [x] Configure database backups and secrets management (partial)
+  - Added a simple rake task `bin/rails db:backup` (implemented in `backend/lib/tasks/backup.rake`) which uses `pg_dump` to create timestamped backups in `tmp/backups/`. This is a lightweight developer convenience; for production use a managed backup solution is recommended.
+  - Secrets management: continue to use encrypted Rails credentials or external secret stores (Vault/GCP Secret Manager/GitHub Secrets). Do not commit secrets to the repo.
+
+- [x] Run dependency vulnerability scanning
+  - Added `bundler-audit` (development) and ran `bundle exec bundler-audit check --update` — no known vulnerabilities were reported at scan time.
 
 ## 11. Deployment
 
