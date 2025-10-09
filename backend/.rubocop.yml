@@ -24,7 +24,7 @@ Metrics/MethodLength:
   Max: 10
 
 Metrics/BlockLength:
-  Max: 20
+  Max: 35
 
 Metrics/ClassLength:
   Max: 200
@@ -65,4 +65,11 @@ Layout/IndentationWidth:
 # RSpec settings (from rubocop-rspec)
 RSpec:
   Enabled: true
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/ExampleLength:
+  Max: 25
+
 

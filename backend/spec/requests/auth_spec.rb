@@ -36,13 +36,14 @@ RSpec.describe "Auth", type: :request do
   end
 
   describe "POST /api/v1/sign_in" do
-    let!(:user) do
+    let(:user) do
       create(:user, email: "login_user@example.com", password: "password",
                     password_confirmation: "password")
     end
 
     context "with valid credentials" do
       it "signs in and returns user data" do
+        user
         params = { user: { email: "login_user@example.com", password: "password" } }
 
         post "/api/v1/sign_in", params: params
@@ -55,6 +56,7 @@ RSpec.describe "Auth", type: :request do
 
     context "with invalid credentials" do
       it "returns unauthorized and error message" do
+        user
         params = { user: { email: "login_user@example.com", password: "wrong" } }
 
         post "/api/v1/sign_in", params: params
@@ -80,17 +82,19 @@ RSpec.describe "Auth", type: :request do
 
       # get current user (request JSON to avoid Devise redirect behavior)
       if auth_header.present?
-        get "/api/v1/me", headers: { "Authorization" => auth_header, "Accept" => "application/json" }
+        get "/api/v1/me",
+            headers: { "Authorization" => auth_header, "Accept" => "application/json" }
       else
         get "/api/v1/me", headers: { "Accept" => "application/json" }
       end
-    expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json.dig("user", "email")).to eq(user.email)
 
       # sign out
       if auth_header.present?
-        delete "/api/v1/sign_out", headers: { "Authorization" => auth_header, "Accept" => "application/json" }
+        delete "/api/v1/sign_out",
+               headers: { "Authorization" => auth_header, "Accept" => "application/json" }
       else
         delete "/api/v1/sign_out", headers: { "Accept" => "application/json" }
       end
