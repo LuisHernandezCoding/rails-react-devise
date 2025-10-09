@@ -1,0 +1,59 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install frontend deps
+        working-directory: ./frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: pnpm build
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install backend gems
+        working-directory: ./backend
+        run: |
+          gem install bundler
+          bundle config set --local path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
+
+      - name: Copy frontend build into backend/public
+        working-directory: ./backend
+        run: |
+          mkdir -p public
+          rsync -av --delete ../frontend/dist/ public/
+
+      - name: Precompile assets
+        working-directory: ./backend
+        env:
+          RAILS_ENV: production
+        run: |
+          bundle exec rake assets:precompile
+
+      - name: Deploy to provider (placeholder)
+        run: |
+          echo "Add your deployment commands here (Heroku, Fly, Render, etc.)."
+          echo "This job demonstrates building the frontend, copying it into Rails public, and precompiling assets."

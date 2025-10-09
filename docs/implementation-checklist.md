@@ -114,10 +114,14 @@ Notes: Added workflow at `.github/workflows/ci.yml` which runs backend RSpec and
 
 ## 11. Deployment
 
-- [ ] Prepare a production `DATABASE_URL` and other envs
-- [ ] Configure build & release pipelines (Heroku/Fly/Render/Vercel)
-- [ ] Precompile assets if serving frontend from Rails
+- [x] Prepare a production `DATABASE_URL` and other envs
+  - Added example production envs to root `.env.example` (DATABASE_URL, SECRET_KEY_BASE, RAILS_ENV, SMTP_*). Do NOT commit secrets.
+- [x] Configure build & release pipelines (Heroku/Fly/Render/Vercel)
+  - Added a sample GitHub Actions workflow at `.github/workflows/deploy.yml` which builds frontend, copies into `backend/public`, and precompiles assets. Replace the final deploy step with provider-specific commands and secrets.
+- [x] Precompile assets if serving frontend from Rails
+  - Added Rake task `assets:build_frontend` at `backend/lib/tasks/assets.rake` which runs `pnpm build` and copies the output to `backend/public`. Also used by the sample deploy workflow.
 - [ ] Monitor health & set up alerts
+  - Recommend configuring Sentry (already present) and external monitoring; left as manual step.
 
 ## 12. Release & PR checklist (for each release)
 
