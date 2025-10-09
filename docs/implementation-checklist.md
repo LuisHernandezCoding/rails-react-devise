@@ -55,13 +55,17 @@ Notes: RSpec and RuboCop were installed via Bundler (rspec 3.13, rubocop 1.81.1)
 - [x] Run `bin/rails generate devise:install` and `bin/rails generate devise User`
 - [x] Add API controllers for registration and sessions under `app/controllers/api/v1`
 - [x] Add `GET /api/v1/me` endpoint
-- [ ] Add tests for registration/login
+- [x] Add tests for registration/login
 
 ## 5. Backend — background jobs & mail
-
-- [ ] Add Redis & Sidekiq, and add `sidekiq` to `docker-compose.yml`
-- [ ] Configure mailer (SendGrid/Postmark) and add envs
-- [ ] Move mail sending to background jobs
+ 
+- [x] Add Redis & Sidekiq, and add `sidekiq` to `docker-compose.yml`
+  - Added `redis` and `sidekiq` services to root `docker-compose.yml`.
+  - Added `sidekiq` and `redis` gems to `backend/Gemfile` and a basic `config/sidekiq.yml`.
+- [x] Configure mailer (SendGrid/Postmark) and add envs
+  - Configured `ActionMailer` SMTP settings in `config/environments/production.rb` and development to read from `SMTP_*` env vars.
+- [x] Move mail sending to background jobs
+  - Configured `ActiveJob` to use `:sidekiq` in development and production. Use `deliver_later` to enqueue mail deliveries into the `mailers` queue.
 
 ## 6. Frontend (React) — initial
 

@@ -52,6 +52,22 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
+  # Use Sidekiq for Active Job in development when available.
+  config.active_job.queue_adapter = :sidekiq
+
+  # Configure Action Mailer to use SMTP via environment variables in development
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.smtp_settings = {
+    address:               ENV.fetch("SMTP_ADDRESS", "localhost"),
+    port:                  ENV.fetch("SMTP_PORT", 1025).to_i,
+    domain:                ENV.fetch("SMTP_DOMAIN", "localhost"),
+    user_name:             ENV.fetch("SMTP_USERNAME", nil),
+    password:              ENV.fetch("SMTP_PASSWORD", nil),
+    authentication:        ENV.fetch("SMTP_AUTH", "plain").to_sym,
+    enable_starttls_auto:  ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true"
+  }
+
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 

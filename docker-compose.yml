@@ -33,6 +33,30 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  redis:
+    image: redis:7
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sidekiq:
+    build: ./backend
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    volumes:
+      - ./backend:/app:cached
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_started
+      db:
+        condition: service_healthy
 
 volumes:
   db-data:
