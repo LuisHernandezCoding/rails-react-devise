@@ -7,8 +7,6 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'pnpm'
-        cache-dependency-path: frontend/pnpm-lock.yaml
     - name: Enable Corepack and pnpm
       # Corepack is bundled with recent Node.js releases and is the recommended
       # way to make pnpm available in CI. It avoids global npm installs.

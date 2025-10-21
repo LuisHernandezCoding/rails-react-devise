@@ -3,6 +3,12 @@ description: 'Run frontend Vitest tests'
 runs:
   using: 'composite'
   steps:
+    - name: Enable Corepack and pnpm (safety)
+      run: |
+        corepack enable
+        corepack prepare pnpm@latest --activate
+      shell: bash
+
     - name: Run frontend tests
       working-directory: ./frontend
       # Use the dedicated CI script which calls vitest run. Passing --ci to vitest
