@@ -115,8 +115,8 @@ importers:
         specifier: ^7.1.7
         version: 7.1.9(@types/node@24.9.1)
       web-streams-polyfill:
-        specifier: ^3.2.1
-        version: 3.3.3
+        specifier: ^4.2.0
+        version: 4.2.0
       whatwg-fetch:
         specifier: ^3.6.2
         version: 3.6.20
@@ -3540,8 +3540,8 @@ packages:
   walker@1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}
 
-  web-streams-polyfill@3.3.3:
-    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
+  web-streams-polyfill@4.2.0:
+    resolution: {integrity: sha512-0rYDzGOh9EZpig92umN5g5D/9A1Kff7k0/mzPSSCY8jEQeYkgRMoY7LhbXtUCWzLCMX0TUE9aoHkjFNB7D9pfA==}
     engines: {node: '>= 8'}
 
   webidl-conversions@7.0.0:
@@ -7513,7 +7513,7 @@ snapshots:
     dependencies:
       makeerror: 1.0.12
 
-  web-streams-polyfill@3.3.3: {}
+  web-streams-polyfill@4.2.0: {}
 
   webidl-conversions@7.0.0: {}
 
