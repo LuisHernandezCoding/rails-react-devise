@@ -5,13 +5,39 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
-    allow:
-      - dependency-type: "all"
+    target-branch: "integration"
+    groups:
+      backend-production:
+        dependency-type: "production"
+        update-types: ["minor", "patch"]
+      backend-development:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
-    allow:
-      - dependency-type: "all"
+    target-branch: "integration"
+    groups:
+      frontend-production:
+        dependency-type: "production"
+        update-types: ["minor", "patch"]
+      frontend-development:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    target-branch: "integration"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    target-branch: "integration"
