@@ -1,0 +1,19 @@
+name: 'Run Backend Tests'
+description: 'Run backend RSpec tests'
+runs:
+  using: 'composite'
+  steps:
+    - name: Prepare DB
+      working-directory: ./backend
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/backend_test
+      run: |
+        bundle exec rake db:create db:schema:load --trace || bundle exec rake db:create db:migrate --trace
+      shell: bash
+    - name: Run RSpec
+      working-directory: ./backend
+      env:
+        RAILS_ENV: test
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/backend_test
+      run: bundle exec rspec
+      shell: bash

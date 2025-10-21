@@ -1,0 +1,9 @@
+name: 'Run Frontend Linter'
+description: 'Run frontend ESLint linter'
+runs:
+  using: 'composite'
+  steps:
+    - name: Run frontend linter
+      working-directory: ./frontend
+      run: pnpm lint
+      shell: bash

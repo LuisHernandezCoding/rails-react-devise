@@ -1,0 +1,9 @@
+name: 'Run Backend Linter'
+description: 'Run backend RuboCop linter'
+runs:
+  using: 'composite'
+  steps:
+    - name: Run RuboCop
+      working-directory: ./backend
+      run: bundle exec rubocop
+      shell: bash

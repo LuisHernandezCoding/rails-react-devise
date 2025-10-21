@@ -2,7 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 if (typeof (globalThis as any).TransformStream === 'undefined') {
   // Minimal passthrough using Node streams.PassThrough
-  const { PassThrough } = require('stream') as typeof import('stream')
+  // use top-level dynamic import to avoid require()
+  const { PassThrough } = (await import('stream')) as unknown as typeof import('stream')
   class MinimalTransformStream {
     readable: any
     writable: any
@@ -16,13 +17,15 @@ if (typeof (globalThis as any).TransformStream === 'undefined') {
 }
 
 if (typeof (globalThis as any).TextEncoder === 'undefined') {
-  const { TextEncoder, TextDecoder } = require('util') as typeof import('util')
+  const { TextEncoder, TextDecoder } = (await import('util')) as unknown as typeof import('util')
   ;(globalThis as any).TextEncoder = TextEncoder
   ;(globalThis as any).TextDecoder = TextDecoder
 }
 
+// ensure fetch polyfill is loaded when needed
 try {
-  require('whatwg-fetch')
-} catch (e) {
+  // @ts-expect-error: this package doesn't expose types for direct import in tests
+  await import('whatwg-fetch')
+} catch {
   // ignore if already present
 }

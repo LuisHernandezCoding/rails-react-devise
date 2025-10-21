@@ -7,9 +7,6 @@ module.exports = {
     // Use ts-jest for TypeScript files and pass a Jest-friendly tsconfig
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
   },
-  moduleNameMapper: {
-    '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
-  },
   // Map the real API service to a lightweight mock during tests to avoid
   // Vite-specific import.meta usage.
   moduleNameMapper: {

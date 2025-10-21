@@ -35,7 +35,7 @@ end
 
 ## Frontend
 
-- Use Jest + React Testing Library
+- Use Vitest + React Testing Library (tests in this repo use Vitest globals)
 - Use `msw` to mock API requests in tests
 - Add tests for AuthContext and login flow
 
@@ -61,15 +61,15 @@ test('renders login and calls api', async () => {
 
 - Run `bundle exec rubocop` and `pnpm lint`
 - Run backend test suite (RSpec)
-- Run frontend tests (Jest)
+-- Run frontend tests (Vitest)
 - Fail CI on lint/test failures
 
 ## Coverage
 
 - Use SimpleCov for Rails to track test coverage
-- Use coverage reporters for frontend (jest --coverage)
+-- Use coverage reporters for frontend (vitest --coverage)
 
 ## Local quick checks
 
 - `bundle exec rspec --fail-fast`
-- `pnpm test -- --watchAll=false`
+-- `pnpm --filter frontend test` or `pnpm --filter frontend run test:ci` for CI runs
