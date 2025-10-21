@@ -1,24 +1,14 @@
-const instance: any = {
-  defaults: { headers: { common: {} } },
-  get: () => Promise.resolve({ data: {} }),
-  post: () => Promise.resolve({ data: {} }),
+type ApiResponse<T = unknown> = { data: T }
+
+const instance = {
+  defaults: { headers: { common: {} as Record<string, string> } },
+  get: <T = unknown>() => Promise.resolve({ data: {} as T } as ApiResponse<T>),
+  post: <T = unknown>() => Promise.resolve({ data: {} as T } as ApiResponse<T>),
 }
 
 function setToken(token: string | null) {
-  if (token) instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  else delete instance.defaults.headers.common['Authorization']
+  if (token) (instance.defaults.headers.common as Record<string, string>)['Authorization'] = `Bearer ${token}`
+  else delete (instance.defaults.headers.common as Record<string, string>)['Authorization']
 }
 
 export default Object.assign(instance, { setToken })
-const instance = {
-  defaults: { headers: { common: {} } },
-  get: () => Promise.resolve({ data: {} }),
-  post: () => Promise.resolve({ data: {} }),
-}
-
-function setToken(token) {
-  if (token) instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  else delete instance.defaults.headers.common['Authorization']
-}
-
-module.exports = Object.assign(instance, { setToken })

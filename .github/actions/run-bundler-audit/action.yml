@@ -1,0 +1,9 @@
+name: 'Run Bundler Audit'
+description: 'Run bundler-audit to check for security vulnerabilities'
+runs:
+  using: 'composite'
+  steps:
+    - name: Run bundler-audit
+      working-directory: ./backend
+      run: bundle exec bundler-audit check --update
+      shell: bash

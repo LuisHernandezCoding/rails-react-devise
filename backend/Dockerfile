@@ -25,4 +25,7 @@ EXPOSE 3000
 
 # Default command runs the Rails dev server; when using docker-compose we map host:container ports
 ENV RAILS_PORT=3000
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "${RAILS_PORT}"]

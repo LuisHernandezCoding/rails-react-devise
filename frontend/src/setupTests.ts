@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 // Load JS test polyfills (avoids TypeScript compile-time errors for the shims)
 import './testPolyfills/setupPolyfills'
 import { server } from './mocks/server'

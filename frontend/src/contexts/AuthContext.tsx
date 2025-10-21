@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
-import api from '../services/api'
+import { api, setToken as setApiToken } from '../services/api'
 
 type User = {
   id: number
@@ -30,42 +30,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return localStorage.getItem('token')
   })
 
-  useEffect(() => {
-    if (token) {
-      api.setToken(token)
-      // optimistic fetch of current user
-      api.get('/api/v1/me').then(res => setUser(res.data.user)).catch(() => {
-        setUser(null)
-        setToken(null)
-        localStorage.removeItem('token')
-      })
-    }
-  }, [token])
-
   async function login(email: string, password: string) {
     const res = await api.post('/api/v1/sessions', { email, password })
-    const token = res.data.token
-    const user = res.data.user
-    setToken(token)
-    setUser(user)
-    api.setToken(token)
-    localStorage.setItem('token', token)
+    const resToken = res.data.token
+    const resUser = res.data.user
+    setToken(resToken)
+    setUser(resUser)
+    setApiToken(resToken)
+    localStorage.setItem('token', resToken)
   }
 
   async function register(email: string, password: string) {
     const res = await api.post('/api/v1/registrations', { email, password })
-    const token = res.data.token
-    const user = res.data.user
-    setToken(token)
-    setUser(user)
-    api.setToken(token)
-    localStorage.setItem('token', token)
+    const resToken = res.data.token
+    const resUser = res.data.user
+    setToken(resToken)
+    setUser(resUser)
+    setApiToken(resToken)
+    localStorage.setItem('token', resToken)
   }
 
   function logout() {
     setUser(null)
     setToken(null)
-    api.setToken(null)
+    setApiToken(null)
     localStorage.removeItem('token')
   }
 
