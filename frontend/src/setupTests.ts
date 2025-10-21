@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom'
+// Load JS test polyfills (avoids TypeScript compile-time errors for the shims)
+import './testPolyfills/setupPolyfills'
 import { server } from './mocks/server'
 
 // Establish API mocking before all tests.
