@@ -88,7 +88,7 @@ Notes: RSpec and RuboCop were installed via Bundler (rspec 3.13, rubocop 1.81.1)
 - [x] Add caching for bundler and node modules (implemented in workflow)
 - [x] Add security checks: `bundle audit` or Dependabot
 
-Notes: Added workflow at `.github/workflows/ci.yml` which runs backend RSpec and RuboCop and frontend pnpm tests. Caching for bundler and pnpm is enabled. Added Dependabot config at `.github/dependabot.yml` to keep dependencies up to date weekly.
+Notes: Added workflow at `.github/workflows/ci.yml` which runs backend RSpec and RuboCop and frontend pnpm tests. Caching for bundler and pnpm is enabled. Added Dependabot config at `.github/dependabot.yml` to keep dependencies up to date weekly (now watches Bundler, npm/pnpm, GitHub Actions, and Docker images).
 
 ## 9. Dockerize full stack (optional but recommended)
 
