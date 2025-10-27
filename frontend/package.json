@@ -58,6 +58,6 @@
     "web-streams-polyfill": "^4.2.0",
     "whatwg-fetch": "^3.6.2",
     "vitest": "^1.4.4",
-    "jsdom": "^22.1.0"
+    "jsdom": "^27.0.1"
   }
 }
