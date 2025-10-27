@@ -25,7 +25,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-ruby
       - name: Cache Ruby gems
         uses: actions/cache@v4
@@ -46,7 +46,7 @@ jobs:
     name: Frontend Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/run-frontend-tests
 
@@ -54,7 +54,7 @@ jobs:
     name: Lint and Audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-ruby
       - name: Cache Ruby gems
         uses: actions/cache@v4
